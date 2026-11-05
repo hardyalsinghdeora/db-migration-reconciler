@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "db-migration-reconciler"
+version = "0.1.0"
+description = "Verify and repair a table-by-table database migration while the source stays live: schema drift, row counts, chunked order-independent checksums and resumable backfill."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Hardyal Singh Deora", email = "hardyalsinghdeora@gmail.com" }]
+requires-python = ">=3.12"
+keywords = ["database", "migration", "reconciliation", "checksum", "backfill", "sqlalchemy", "postgresql", "mysql"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Database",
+  "Typing :: Typed",
+]
+dependencies = [
+  "sqlalchemy>=2.0",
+  "typer>=0.12",
+  "rich>=13",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+mysql = ["pymysql>=1.1"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "mypy>=1.11"]
+
+[project.scripts]
+reconciler = "reconciler.cli:app"
+
+[project.urls]
+Author = "https://hardyalsinghdeora.pages.dev"
+GitHub = "https://github.com/hardyalsinghdeora"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reconciler"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "N", "C4", "PTH", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers"
+filterwarnings = ["error"]
