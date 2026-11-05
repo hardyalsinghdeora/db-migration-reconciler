@@ -50,14 +50,18 @@ def open_database(url: str, tables: Sequence[str] | None = None) -> Database:
     _refuse_missing_sqlite_file(full_url)
     try:
         engine = create_engine(full_url)
-        metadata = MetaData()
-        metadata.reflect(bind=engine, only=list(tables) if tables else None)
     except ModuleNotFoundError as exc:
         raise ReconcilerError(
             f"driver for {full_url.split(':', 1)[0]!r} is not installed ({exc.name}); "
             "install the matching extra, e.g. pip install 'db-migration-reconciler[postgres]'"
         ) from exc
     except SQLAlchemyError as exc:
+        raise ReconcilerError(f"cannot open {url}: {exc}") from exc
+    metadata = MetaData()
+    try:
+        metadata.reflect(bind=engine, only=list(tables) if tables else None)
+    except SQLAlchemyError as exc:
+        engine.dispose()
         raise ReconcilerError(f"cannot open {url}: {exc}") from exc
     log.debug(
         "opened %s tables=%d", engine.url.render_as_string(hide_password=True), len(metadata.tables)

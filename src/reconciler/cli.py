@@ -203,7 +203,8 @@ def _session(
     _configure_logging(verbose)
     databases: list[Database] = []
     try:
-        databases = [open_database(url, tables) for url in urls]
+        for url in urls:  # one at a time, so a failure on the second still disposes the first
+            databases.append(open_database(url, tables))
         yield databases
     except ReconcilerError as exc:
         stderr.print(f"[red]error:[/red] {escape(str(exc))}")
