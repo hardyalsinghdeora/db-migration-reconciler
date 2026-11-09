@@ -334,7 +334,7 @@ Source layout: `src/reconciler/` holds one module per concern (`cli`,
 
 ## About
 
-Built by [Hardyal Singh Deora](https://hardyalsinghdeora.pages.dev)
+Built by [Hardyal Singh Deora](https://hardyal.is-a.dev)
 ([GitHub](https://github.com/hardyalsinghdeora)) as a portfolio sample: a
 reference implementation of the tooling a careful engineer writes for a
 migration that has to run with no maintenance window. It is not extracted from
